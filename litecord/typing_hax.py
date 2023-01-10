@@ -77,6 +77,11 @@ class LitecordApp(Quart):
         self.storage.presence = self.presence
         self.guild_store = GuildMemoryStore()
         self.lazy_guild = LazyGuildManager()
+
+        # only start VoiceManager if needed.
+        # we do this because of a bug on ./manage.py where it
+        # cancels the LVSPManager's spawn regions task. we don't
+        # need to start it on manage time.
         self.voice = VoiceManager(self) if init_voice else None
 
     @property
