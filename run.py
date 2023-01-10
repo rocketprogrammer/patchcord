@@ -120,7 +120,7 @@ redirect_logging()
 
 def make_app():
     app = LitecordApp(__name__)
-    
+
     if app.is_debug:
         log.info("on debug")
         handler.level = logbook.DEBUG
@@ -270,7 +270,7 @@ async def app_set_ratelimit_headers(resp: Response):
     return resp
 
 
-async def init_app_db(app_: LitecordApp):
+async def init_app_db(app_: LitecordApp, init_voice: bool=True):
     """Connect to databases.
 
     Also spawns the job scheduler.
@@ -280,7 +280,7 @@ async def init_app_db(app_: LitecordApp):
     assert pool is not None
     app_.db = pool
     app_.sched = JobManager(context_func=app.app_context)
-    app.init_managers()
+    app.init_managers(init_voice)
 
 async def api_index(app_: LitecordApp):
     to_find = {}
@@ -312,7 +312,7 @@ async def api_index(app_: LitecordApp):
         path = path.replace("peer.id", "user.id")
 
         methods = rule.methods
-        if not methods: 
+        if not methods:
             continue
         for method in methods:
             pathname = to_find.get((path, method))

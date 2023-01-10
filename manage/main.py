@@ -47,7 +47,7 @@ def main(config):
 
     parser = init_parser()
 
-    loop.run_until_complete(init_app_db(app))
+    loop.run_until_complete(init_app_db(app, init_voice=False))
 
     async def _ctx_wrapper(fake_app, args):
         async with app.app_context():

@@ -27,7 +27,7 @@ class Request(_Request):
     bucket_global: RatelimitBucket
     retry_after: Optional[int]
     user_id: Optional[int]
-    
+
     def on_json_loading_failed(self, error: Exception) -> Any:
         raise BadRequest(50109)
 
@@ -61,8 +61,8 @@ class LitecordApp(Quart):
         )
         self.config.from_object(config_path)
         self.config["MAX_CONTENT_LENGTH"] = 500 * 1024 * 1024  # 500 MB
-        
-    def init_managers(self):
+
+    def init_managers(self, init_voice: bool):
         # Init singleton classes
         self.session = ClientSession()
         self.winter_factory = SnowflakeFactory()
@@ -77,7 +77,8 @@ class LitecordApp(Quart):
         self.storage.presence = self.presence
         self.guild_store = GuildMemoryStore()
         self.lazy_guild = LazyGuildManager()
-        self.voice = VoiceManager(self)
+        self.voice = VoiceManager(self) if init_voice else None
+
     @property
     def is_debug(self) -> bool:
         return self.config.get("DEBUG", False)
